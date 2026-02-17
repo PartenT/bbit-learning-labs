@@ -16,12 +16,15 @@
 class mqProducerInterface:
     def __init__(self, routing_key: str, exchange_name: str) -> None:
         # Save parameters to class variables
+        self.routing_key = routing_key
+        self.exchange_name = exchange_name
 
         # Call setupRMQConnection
-        pass
+        self.setupRMQConnection()
 
     def setupRMQConnection(self) -> None:
         # Set-up Connection to RabbitMQ service
+        
 
         # Establish Channel
 

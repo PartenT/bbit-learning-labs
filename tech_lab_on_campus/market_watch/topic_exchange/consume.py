@@ -15,25 +15,28 @@
 import argparse
 import sys
 
+from typing import List
+
 from solution.consumer_sol import mqConsumer  # pylint: disable=import-error
 
-def main(sector: str, queueName: str) -> None:
+def main(sectors: List[str], queueName: str) -> None:
     
-    # Implement Logic to Create Binding Key from the ticker and sector variable -  Step 2
-    #
-    #                       WRITE CODE HERE!!!
-    #
+    # Logic to create BKs from tickers and multiple sectors.
+    bindingKeys = [f"#.{sector}" for sector in sectors]
     
-    consumer = mqConsumer(binding_key=bindingKey,exchange_name="Tech Lab Topic Exchange",queue_name=queueName)    
-    consumer.startConsuming()
-    
+    # Create consumer that's suscribed to multiple sectors.
+    consumer = mqConsumer(binding_keys=bindingKeys,exchange_name="Tech Lab Topic Exchange",queue_name=queueName)   
 
+    consumer.startConsuming()
 
 if __name__ == "__main__":
+    sector = None
+    queue  = None
 
-    # Implement Logic to read the sector and queueName string from the command line and save them - Step 1
-    #
-    #                       WRITE CODE HERE!!!
-    #
+    if len(sys.argv) < 3:
+        raise RuntimeError("Must have at least 2 inputs on command line.")
+    else:
+        sector = sys.argv[1:-1]
+        queue  = sys.argv[-1]
 
     sys.exit(main(sector,queue))

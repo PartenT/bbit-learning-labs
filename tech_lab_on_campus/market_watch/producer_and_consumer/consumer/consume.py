@@ -24,7 +24,6 @@ def main() -> None:
     consumer = mqConsumer(binding_key="Tech Lab Key",exchange_name="Tech Lab Exchange",queue_name="Tech Lab Queue")
     consumer.startConsuming()
 
-
 if __name__ == "__main__":
     try:
         main()

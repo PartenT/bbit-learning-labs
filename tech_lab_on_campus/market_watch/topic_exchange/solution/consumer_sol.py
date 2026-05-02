@@ -2,14 +2,16 @@ import os
 import pika
 from pika import connection
 
+from typing import List
+
 from consumer_interface import mqConsumerInterface
 
 class mqConsumer(mqConsumerInterface):
     def __init__(
-        self, binding_key: str, exchange_name: str, queue_name: str
+        self, binding_keys: List[str], exchange_name: str, queue_name: str
     ) -> None:
         # Save parameters to class variables
-        self.binding_key   = binding_key
+        self.binding_keys   = binding_keys
         self.exchange_name = exchange_name
         self.queue_name    = queue_name
 
@@ -31,14 +33,15 @@ class mqConsumer(mqConsumerInterface):
         self.channel.queue_declare(queue=self.queue_name)
 
         # Create the exchange if not already present
-        self.channel.exchange_declare(exchange=self.exchange_name)
+        self.channel.exchange_declare(exchange=self.exchange_name, exchange_type="topic")
 
         # Bind Binding Key to Queue on the exchange
-        self.channel.queue_bind(
-            queue=self.queue_name,
-            routing_key=self.binding_key,
-            exchange=self.exchange_name,
-        )
+        for bk in self.binding_keys:
+            self.channel.queue_bind(
+                queue=self.queue_name,
+                routing_key=bk,
+                exchange=self.exchange_name
+            )
 
         # Set-up Callback function for receiving messages
         self.channel.basic_consume(
